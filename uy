@@ -1,0 +1,138 @@
+<?php
+session_start();
+if (isset($_SESSION['usi'])) {
+    include("conn.php");
+
+    $user = $_SESSION['usi'];
+    $query = $conn->prepare("SELECT id, user_id, name, mobile_no, email, img, bank_name, branch_name, acc_no, ifs_code, address, city, district, state,  dateOfJoining FROM member WHERE user_id = ? ");
+    $query->bind_param('s', $user);
+    $query->execute();
+    $query->bind_result($id, $user_id,  $name, $mobile, $email,  $img, $bank_name, $branch_name, $acc_no, $ifsc, $address, $city, $district, $state, $doj);
+    $query->fetch();
+    $query->close();
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<?php include 'head.php'  ?>
+
+<body class="header-fix fix-sidebar">
+
+    <div id="main-wrapper">
+
+        <?php include 'header.php'  ?>
+        <?php include 'sidebar.php'  ?>
+
+        <div class="page-wrapper">
+
+            <div class="row page-titles">
+                <div class="col-md-5 align-self-center">
+                    <h3 class="text-primary">Buy Funds</h3>
+                </div>
+                <div class="col-md-7 align-self-center">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Buy Funds</li>
+                    </ol>
+                </div>
+            </div>
+
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="bg-">
+                                            <h5>IMPS, NEFT, RTGS, Cash Deposit</h5>
+                                            <br />Bank Name : <b></b>
+                                            <br />Bank IFSC : <b></b>
+                                            <br />Account Name : <b></b>
+                                            <br />Account Number : <b></b>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="bg- text-center">
+                                            <h5>Scan UPI QR</h5>
+                                            <img src="images/qr.png" alt="UPI" style="max-width:100%;width:200px;" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="bg-">
+                                    <form action="check_fund_purchased.php" method="POST">
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label>Payment Mode</label>
+                                                <select name="mode" id="" class="form-control">
+                                                    <option value="Cash">Cash</option>
+                                                    <option value="IMPS">IMPS</option>
+                                                    <option value="NEFT">NEFT</option>
+                                                    <option value="RTGS">RTGS</option>
+                                                    <option value="UPI">UPI</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label>Payment UTR</label>
+                                                <input name="utr_no" type="text" class="form-control"
+                                                    placeholder="Enter UTR" />
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label>Amount</label>
+                                                <input name="amount" type="text" id="" class="form-control"
+                                                    placeholder="Enter Amount" />
+                                            </div>
+                                            <!-- <div class="col-md-3 form-group">
+                                                <label>Upload Receipt</label>
+                                                <input type="file" name="image" style="max-width:100%" />
+                                            </div> -->
+                                        </div>
+                                        <div class="text-center">
+                                            <input type="submit" name="add_fund" value="Add Fund"
+                                                class="btn btn-info" />
+                                        </div>
+                                    </form>
+                                    <p class='mt-3'><b>Note: </b>Company may block account in case
+                                        of providing
+                                        wrong information
+                                        about payment!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- <footer class="footer"> © 2018 CoinDash All Right Reserved.</footer> -->
+
+        </div>
+
+    </div>
+
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="js/lib/jquery/jquery.min.js"></script>
+
+    <script src="js/lib/bootstrap/js/popper.min.js"></script>
+    <script src="js/lib/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="js/jquery.slimscroll.js"></script>
+
+    <script src="js/sidebarmenu.js"></script>
+
+    <script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
+
+    <script src="js/custom.min.js"></script>
+</body>
+
+</html>
+
+<?php
+} else {
+    header("location: login.php");
+}
+?>
