@@ -1,0 +1,47 @@
+<?php
+session_start();
+if (isset($_SESSION['usi'])) {
+
+    if (isset($_POST['add_fund'])) {
+        include('conn.php');
+
+        $mid = $_SESSION['usi'];
+        $mode = $_POST['mode'];
+        $amount = trim($_POST['amount']);
+        $utr_no = filter_var($_POST['utr_no'], FILTER_SANITIZE_STRING);
+        $status = 'Pending';
+
+
+        if ($mode && $utr_no && $amount) {
+            $new_record = $conn->prepare('INSERT INTO fund_purchased (status, user_id, payment_mode, utr_no, amount) VALUES(?,?, ?,?,?) ');
+            $new_record->bind_param("ssssd", $status, $mid, $mode, $utr_no, $amount);
+
+
+            if ($new_record->execute()) {
+                echo "<script type='text/javascript'>
+                alert('Fund added successfully');
+                window.location='received_fund_history.php';
+                </script>";
+                $new_record->close();
+                $conn->close();
+                exit();
+            } else {
+                echo "<script type='text/javascript'>
+                alert('TRY AGAIN');
+                window.location='buy_funds.php';
+                </script>";
+                exit();
+            }
+        } else {
+            echo "<script type='text/javascript'>
+            alert('Kindly fill out the required fields');
+                window.location='buy_funds.php';
+                </script>";
+            exit();
+        }
+    } else {
+        header('location:buy_funds.php');
+    }
+} else {
+    header('location:login.php');
+}
